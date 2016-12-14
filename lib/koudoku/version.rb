@@ -1,3 +1,3 @@
 module Koudoku
-  VERSION = "1.3.0b"
+  VERSION = "1.3.0c"
 end

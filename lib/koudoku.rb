@@ -20,10 +20,10 @@ module Koudoku
   @@prorate = true
 
 
-  @@layout = nil
+  @@layout = 'dashboard'
 
   def self.layout
-    @@layout || 'dashboard'
+    'dashboard'
   end
 
   def self.layout=(layout)
