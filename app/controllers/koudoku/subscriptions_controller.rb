@@ -50,6 +50,7 @@ module Koudoku
     def load_subscription
       ownership_attribute = :"#{Koudoku.subscriptions_owned_by}_id"
       @subscription = ::Subscription.where(ownership_attribute => current_owner.id).find_by_id(params[:id])
+      @customer = Stripe::Customer.retrieve(@subscription.stripe_id) if @subscription.present? && @subscription.stripe_id.present?
       return @subscription.present? ? @subscription : unauthorized
     end
 
