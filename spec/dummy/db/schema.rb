@@ -42,6 +42,8 @@ ActiveRecord::Schema.define(:version => 20130520163946) do
     t.string   "stripe_id"
     t.integer  "plan_id"
     t.string   "last_four"
+    t.string   "expiry_month"
+    t.string   "expiry_year"
     t.integer  "coupon_id"
     t.string   "card_type"
     t.float    "current_price"
