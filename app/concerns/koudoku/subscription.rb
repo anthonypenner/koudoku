@@ -233,6 +233,12 @@ module Koudoku::Subscription
   def finalize_downgrade!
   end
 
+  # Called from the cancel action in the subscriptiosn controller. Allows
+  # you to tie into the cancel params from your app. In our use case, we let you select
+  # which products you would like to keep within the free tier.
+  def before_cancelation(request_params)
+  end
+
   def finalize_cancelation!
   end
 
