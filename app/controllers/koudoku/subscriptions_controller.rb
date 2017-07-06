@@ -121,7 +121,7 @@ module Koudoku
         flash[:notice] = after_new_subscription_message
         redirect_to after_new_subscription_path
       else
-        flash[:error] = I18n.t('koudoku.failure.problem_processing_transaction')
+        flash[:error] = @subscription.errors.full_messages.first || I18n.t('koudoku.failure.problem_processing_transaction')
         render :new
       end
     end
@@ -145,8 +145,8 @@ module Koudoku
         flash[:notice] = I18n.t('koudoku.confirmations.subscription_updated')
         redirect_to owner_subscription_path(@owner, @subscription)
       else
-        flash[:error] = I18n.t('koudoku.failure.problem_processing_transaction')
-        render :edit
+        flash[:error] = @subscription.errors.full_messages.first || I18n.t('koudoku.failure.problem_processing_transaction')
+        redirect_to owner_subscription_path(@owner, @subscription)
       end
     end
 

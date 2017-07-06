@@ -33,8 +33,14 @@ module Koudoku::Subscription
             prepare_for_downgrade if downgrading?
             prepare_for_upgrade if upgrading?
 
-            # update the package level with stripe.
-            customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
+            begin
+              # update the package level with stripe.
+              customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, :coupon => self.coupon)
+            rescue Stripe::InvalidRequestError => card_error
+              errors[:base] << card_error.message
+              invalid_coupon
+              return false
+            end
 
             finalize_downgrade! if downgrading?
             finalize_upgrade! if upgrading?
@@ -86,8 +92,13 @@ module Koudoku::Subscription
               customer = Stripe::Customer.create(customer_attributes)
 
               finalize_new_customer!(customer.id, plan.price)
-              customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate)
+              customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, :coupon => self.coupon)
 
+
+            rescue Stripe::InvalidRequestError => card_error
+              errors[:base] << card_error.message
+              invalid_coupon
+              return false
             rescue Stripe::CardError => card_error
               errors[:base] << card_error.message
               card_was_declined
@@ -256,6 +267,9 @@ module Koudoku::Subscription
   end
 
   def charge_disputed
+  end
+
+  def invalid_coupon
   end
 
 end
