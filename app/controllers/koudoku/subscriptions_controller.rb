@@ -166,7 +166,7 @@ module Koudoku
 
     def after_new_subscription_path
       return super(@owner, @subscription) if defined?(super)
-      owner_subscription_path(@owner, @subscription)
+      owner_subscription_path(@owner, @subscription, subscription: 'created')
     end
 
     def after_new_subscription_message
