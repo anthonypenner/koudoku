@@ -80,11 +80,11 @@ module Koudoku::Subscription
               }
 
               # If the class we're being included in supports coupons ..
-              if respond_to? :coupon
-                if coupon.present? and coupon.free_trial?
-                  customer_attributes[:trial_end] = coupon.free_trial_ends.to_i
-                end
-              end
+              # if respond_to? :coupon
+              #   if coupon.present? # and coupon.free_trial?
+              #     customer_attributes[:trial_end] = coupon.free_trial_ends.to_i
+              #   end
+              # end
 
               customer_attributes[:coupon] = @coupon_code if @coupon_code
 
