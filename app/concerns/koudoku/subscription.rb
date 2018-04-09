@@ -79,14 +79,13 @@ module Koudoku::Subscription
                 source: credit_card_token # obtained with Stripe.js
               }
 
-              # If the class we're being included in supports coupons ..
-              # if respond_to? :coupon
-              #   if coupon.present? # and coupon.free_trial?
-              #     customer_attributes[:trial_end] = coupon.free_trial_ends.to_i
-              #   end
-              # end
-
-              customer_attributes[:coupon] = @coupon_code if @coupon_code
+              if @coupon_code.present? && @coupon_code == '2MONTHSFREE'
+                customer_attributes[:trial_end] = (Time.zone.now + 2.months).to_i
+              elsif @coupon_code.present? && @coupon_code == 'TESTDRIVE'
+                customer_attributes[:trial_end] = (Time.zone.now + 1.months).to_i
+              elsif @coupon_code.present?
+                customer_attributes[:coupon] = @coupon_code
+              end
 
               # create a customer at that package level.
               customer = Stripe::Customer.create(customer_attributes)
