@@ -15,6 +15,8 @@ module Koudoku
     end
 
     def load_owner
+      raise ActiveRecord::RecordNotFound if current_user.blank?
+
       unless params[:owner_id].nil?
         if current_owner.present?
 
