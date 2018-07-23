@@ -38,9 +38,9 @@ module Koudoku::Subscription
 
               if self.coupon.present? && (self.coupon == '2MONTHSFREE' || self.coupon == 'TESTDRIVE')
                 if self.coupon == '2MONTHSFREE'
-                  customer.update_subscription(:plan => self.plan.stripe_id, :prorate => koudoku.prorate, trial_end: (Time.zone.now + 2.months).to_i)
+                  customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, trial_end: (Time.zone.now + 2.months).to_i)
                 elsif self.coupon == 'TESTDRIVE'
-                  customer.update_subscription(:plan => self.plan.stripe_id, :prorate => koudoku.prorate, trial_end: (Time.zone.now + 1.months).to_i)
+                  customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, trial_end: (Time.zone.now + 1.months).to_i)
                 end
               else
                 customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, :coupon => self.coupon)
@@ -96,9 +96,9 @@ module Koudoku::Subscription
 
               if self.coupon.present? && (self.coupon == '2MONTHSFREE' || self.coupon == 'TESTDRIVE')
                 if self.coupon == '2MONTHSFREE'
-                  customer.update_subscription(:plan => self.plan.stripe_id, :prorate => koudoku.prorate, trial_end: (Time.zone.now + 2.months).to_i)
+                  customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, trial_end: (Time.zone.now + 2.months).to_i)
                 elsif self.coupon == 'TESTDRIVE'
-                  customer.update_subscription(:plan => self.plan.stripe_id, :prorate => koudoku.prorate, trial_end: (Time.zone.now + 1.months).to_i)
+                  customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, trial_end: (Time.zone.now + 1.months).to_i)
                 end
               else
                 customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, :coupon => self.coupon)
