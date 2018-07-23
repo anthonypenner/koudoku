@@ -35,7 +35,17 @@ module Koudoku::Subscription
 
             begin
               # update the package level with stripe.
-              customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, :coupon => self.coupon)
+
+              if self.coupon.present? && (self.coupon == '2MONTHSFREE' || self.coupon == 'TESTDRIVE')
+                if self.coupon == '2MONTHSFREE'
+                  customer.update_subscription(:plan => self.plan.stripe_id, :prorate => koudoku.prorate, trial_end: (Time.zone.now + 2.months).to_i)
+                elsif self.coupon == 'TESTDRIVE'
+                  customer.update_subscription(:plan => self.plan.stripe_id, :prorate => koudoku.prorate, trial_end: (Time.zone.now + 1.months).to_i)
+                end
+              else
+                customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, :coupon => self.coupon)
+              end
+
             rescue Stripe::InvalidRequestError => card_error
               errors[:base] << card_error.message
               invalid_coupon
@@ -79,20 +89,20 @@ module Koudoku::Subscription
                 source: credit_card_token # obtained with Stripe.js
               }
 
-              if @coupon_code.present? && @coupon_code == '2MONTHSFREE'
-                customer_attributes[:trial_end] = (Time.zone.now + 2.months).to_i
-              elsif @coupon_code.present? && @coupon_code == 'TESTDRIVE'
-                customer_attributes[:trial_end] = (Time.zone.now + 1.months).to_i
-              elsif @coupon_code.present?
-                customer_attributes[:coupon] = @coupon_code
-              end
-
               # create a customer at that package level.
               customer = Stripe::Customer.create(customer_attributes)
 
               finalize_new_customer!(customer.id, plan.price)
-              customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, :coupon => self.coupon)
 
+              if self.coupon.present? && (self.coupon == '2MONTHSFREE' || self.coupon == 'TESTDRIVE')
+                if self.coupon == '2MONTHSFREE'
+                  customer.update_subscription(:plan => self.plan.stripe_id, :prorate => koudoku.prorate, trial_end: (Time.zone.now + 2.months).to_i)
+                elsif self.coupon == 'TESTDRIVE'
+                  customer.update_subscription(:plan => self.plan.stripe_id, :prorate => koudoku.prorate, trial_end: (Time.zone.now + 1.months).to_i)
+                end
+              else
+                customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, :coupon => self.coupon)
+              end
 
             rescue Stripe::InvalidRequestError => card_error
               errors[:base] << card_error.message
