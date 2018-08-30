@@ -23,6 +23,18 @@ module Koudoku::Subscription
 
           # fetch the customer.
           customer = Stripe::Customer.retrieve(self.stripe_id)
+          if self.credit_card_token.present?
+            prepare_for_card_update
+
+            customer.source = self.credit_card_token
+            customer.save
+
+            # update the last four based on this new card.
+            self.last_four = customer.sources.retrieve(customer.default_source).last4
+            self.expiry_month = customer.sources.retrieve(customer.default_source).exp_month
+            self.expiry_year = customer.sources.retrieve(customer.default_source).exp_year
+            finalize_card_update!
+          end
 
           # if a new plan has been selected
           if self.plan.present?
