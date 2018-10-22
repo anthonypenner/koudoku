@@ -94,7 +94,7 @@ module Koudoku::Subscription
             prepare_for_upgrade
 
             begin
-              raise Koudoku::NilCardToken, "Possible javascript error" if credit_card_token.empty?
+              raise Koudoku::NilCardToken, "Possible javascript error" if credit_card_token.blank?
               customer_attributes = {
                 description: subscription_owner_description,
                 email: subscription_owner_email,
@@ -116,6 +116,9 @@ module Koudoku::Subscription
                 customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, :coupon => self.coupon)
               end
 
+            rescue Koudoku::NilCardToken
+              errors[:base] << 'Something went wrong on this page, please try refreshing and contact support if this error persists.'
+              return false
             rescue Stripe::InvalidRequestError => card_error
               errors[:base] << card_error.message
               invalid_coupon
