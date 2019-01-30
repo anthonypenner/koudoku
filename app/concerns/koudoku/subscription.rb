@@ -116,16 +116,18 @@ module Koudoku::Subscription
                 customer.update_subscription(:plan => self.plan.stripe_id, :prorate => Koudoku.prorate, :coupon => self.coupon)
               end
 
-            rescue Koudoku::NilCardToken
-              errors[:base] << 'Something went wrong on this page, please try refreshing and contact support if this error persists.'
-              return false
             rescue Stripe::InvalidRequestError => card_error
               errors[:base] << card_error.message
               invalid_coupon
               return false
+
             rescue Stripe::CardError => card_error
               errors[:base] << card_error.message
               card_was_declined
+              return false
+
+            rescue
+              errors[:base] << 'Something went wrong on this page, please try refreshing and contact support if this error persists.'
               return false
             end
 
