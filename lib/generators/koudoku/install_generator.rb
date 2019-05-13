@@ -60,7 +60,7 @@ module Koudoku
   # Added by Koudoku.
   mount Koudoku::Engine, at: 'koudoku'
   scope module: 'koudoku' do
-    get 'pricing' => 'subscriptions#index', as: 'pricing'
+    get 'pricing-plan' => 'subscriptions#index', as: 'pricing-plan'
   end
 
 RUBY
